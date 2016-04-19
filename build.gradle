@@ -1,0 +1,32 @@
+apply plugin: 'java-library-distribution'
+
+task wrapper(type: Wrapper) {
+  gradleVersion = '2.12'
+}
+
+jar {
+  manifest {
+    attributes(
+      'Permissions': 'sandbox',
+      'Codebase': 'localhost 127.0.0.1',
+      'Application-Name': 'MyApplet',
+    )
+  }
+}
+
+distributions {
+  main {
+    contents {
+      from('etc') {
+        include 'index.html'
+      }
+    }
+  }
+}
+
+task run(type: Exec) {
+  dependsOn installDist
+  workingDir "build/install/$project.name"
+  commandLine 'python', '-m', 'SimpleHTTPServer'
+}
+
